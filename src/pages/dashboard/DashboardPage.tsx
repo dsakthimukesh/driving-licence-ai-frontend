@@ -53,25 +53,6 @@ export const DashboardPage: React.FC = () => {
           </h1>
           <p className="text-blue-100/90 text-sm leading-relaxed">
             Upload driving licences and process documents with advanced OCR, structured key information extraction, and intelligent RAG question-answering.
-          </p>
-          <div className="pt-2 flex flex-wrap gap-3">
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => setShowUpload((prev) => !prev)}
-              className="bg-white text-blue-900 hover:bg-blue-50 border-0 font-semibold shadow-md"
-            >
-              <FileUp className="h-4 w-4 mr-2 text-blue-700" />
-              Upload Document
-            </Button>
-            <Link to="/documents">
-              <Button variant="outline" size="md" className="border-blue-400/40 text-white hover:bg-white/10">
-                <FileText className="h-4 w-4 mr-2" />
-                Go to My Documents
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
 
