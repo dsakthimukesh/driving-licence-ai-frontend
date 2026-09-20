@@ -1,167 +1,387 @@
-# AI Document Intelligence - React Frontend
 
-A modern, enterprise-grade React + TypeScript application built for the **AI Document Intelligence** system. It enables users to register, log in, upload driving licence documents directly to private object storage via pre-signed URLs, monitor automated OCR & LLM processing pipelines, view structured driving licence fields, and ask grounded AI questions using Retrieval-Augmented Generation (RAG).
+# AI Document Intelligence – Frontend
 
----
+A React and TypeScript frontend for an AI-powered Driving Licence Document Intelligence application. Users can upload driving licence documents, review extracted information, edit the extracted fields, and ask questions about their documents using Retrieval-Augmented Generation (RAG).
+
+## 🚀 Live Application
+
+- **Frontend:** [Add your Vercel deployment URL]
+- **Backend API:** https://driving-licence-ai-backend.onrender.com
+- **Backend Repository:** https://github.com/dsakthimukesh/driving-licence-ai-backend
 
 ## 🌟 Key Features
 
-- 🔐 **Authentication & Session Persistence**: Secure user registration, JWT login, protected route layout guards, and automatic session restoration on browser refresh (`GET /api/v1/auth/me`).
-- 📤 **Direct Pre-Signed Storage Upload**: Generates pre-signed upload URLs via FastAPI (`POST /api/v1/documents/upload-url`) and uploads files directly to Supabase Storage via native `fetch` PUT requests without exposing backend keys or access tokens.
-- ⚡ **Automated Document Processing & Polling**: Triggers end-to-end OCR and AI extraction pipeline, with real-time automatic polling while documents are in `PENDING` or `PROCESSING` states.
-- 📂 **Documents Library**: Full-featured documents management dashboard with search, status badges (`PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`), deletion confirmation, and pagination.
-- 📄 **Document Details & Secure Download**: Detailed storage metadata overview and pre-signed temporary download URL generation (`GET /api/v1/documents/{id}/download-url`).
-- 🪪 **Extracted Driving Licence Information**: Structured card-based view displaying 12 key driving licence fields (`licence_number`, `full_name`, `parent_name`, `date_of_birth`, `blood_group`, `address`, `issue_date`, `expiry_date`, `vehicle_authorization`, `issuing_authority`, `restrictions`, `other_information`).
-- 🤖 **Grounded AI RAG Q&A Interface**: Interactive natural language Q&A component allowing users to ask questions about their document, select quick suggested question pills, and inspect collapsible source chunk citations with page numbers, chunk indices, and vector similarity match percentages.
+- **User Authentication**
+  - User registration and login
+  - JWT-based authentication
+  - Protected application routes
+  - Session restoration after browser refresh
 
----
+- **Document Upload**
+  - Upload driving licence documents
+  - Generate signed upload URLs through the backend
+  - Upload files directly to private Supabase Storage
+  - Confirm uploads and trigger document processing
+
+- **AI Document Processing**
+  - OCR-based text extraction
+  - AI-powered structured information extraction
+  - Automated document processing status tracking
+  - Processing status polling from the frontend
+
+- **Extracted Information**
+  - Display structured driving licence information
+  - Review extracted details
+  - Edit extracted information through the application interface
+
+- **Document Management**
+  - View uploaded documents
+  - View document processing status
+  - View document details
+  - Generate temporary download URLs
+  - Delete documents
+
+- **AI-Powered Document Q&A**
+  - Ask natural-language questions about a document
+  - Retrieve relevant document chunks using vector similarity search
+  - Generate grounded answers using an LLM
+  - Display relevant source information in the response
 
 ## 🛠️ Technology Stack
 
-- **Core**: React 19, TypeScript, Vite
-- **Styling**: Tailwind CSS v4
-- **Routing**: React Router DOM v7
-- **State Management**: React Context API (`AuthContext`), React Hooks (`useState`, `useEffect`, `useContext`, `useCallback`)
-- **API Client**: Native Browser `fetch` API wrapper
-- **Icons**: Lucide React
+### Frontend
 
-*Note: Built strictly without TanStack Query, Zustand, Redux, Axios, Zod, or React Hook Form to maintain a lightweight, beginner-friendly architecture.*
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS v4
+- React Router DOM
+- React Context API
+- React Hooks
+- Native Browser Fetch API
+- Lucide React
 
----
+### Backend and Infrastructure
+
+- FastAPI
+- Python
+- PostgreSQL
+- Supabase Storage
+- pgvector
+- JWT authentication
+- Docker
+- Render
+- Vercel
+
+### AI and Document Processing
+
+- OCR using Tesseract
+- Google Gemini for structured extraction
+- Google Gemini for text embeddings
+- Groq as an LLM fallback provider
+- Retrieval-Augmented Generation (RAG)
 
 ## 📁 Project Structure
 
-```
+```text
 src/
 ├── components/
 │   ├── chat/
-│   │   └── DocumentChat.tsx         # RAG Q&A component & source citations drawer
+│   │   └── DocumentChat.tsx
 │   ├── common/
-│   │   ├── ErrorAlert.tsx           # Reusable alert component
-│   │   └── LoadingSpinner.tsx       # Reusable spinner component
+│   │   ├── ErrorAlert.tsx
+│   │   └── LoadingSpinner.tsx
 │   ├── documents/
-│   │   ├── DocumentMetadataCard.tsx # Storage metadata card
-│   │   ├── DocumentUpload.tsx       # Multi-stage file dropzone & upload pipeline
-│   │   ├── ExtractedInformationCard.tsx # 12 driving licence fields grid
-│   │   ├── InformationField.tsx     # Copyable key-value field item
-│   │   └── StatusBadge.tsx          # Status indicator badge
+│   │   ├── DocumentMetadataCard.tsx
+│   │   ├── DocumentUpload.tsx
+│   │   ├── ExtractedInformationCard.tsx
+│   │   ├── InformationField.tsx
+│   │   └── StatusBadge.tsx
 │   ├── layout/
-│   │   ├── Sidebar.tsx              # Sidebar navigation drawer
-│   │   └── TopNav.tsx               # Top header bar & profile badge
+│   │   ├── Sidebar.tsx
+│   │   └── TopNav.tsx
 │   └── ui/
-│       ├── Button.tsx               # Reusable styled button component
-│       └── Input.tsx                # Reusable accessible input component
+│       ├── Button.tsx
+│       └── Input.tsx
 ├── context/
-│   └── AuthContext.tsx              # Global authentication context & useAuth hook
+│   └── AuthContext.tsx
 ├── layouts/
-│   ├── AuthLayout.tsx               # Centered public layout wrapper
-│   └── ProtectedLayout.tsx          # Authenticated app shell with sidebar & header
+│   ├── AuthLayout.tsx
+│   └── ProtectedLayout.tsx
 ├── pages/
 │   ├── auth/
-│   │   ├── LoginPage.tsx            # Sign in form
-│   │   └── RegisterPage.tsx         # Sign up form
+│   │   ├── LoginPage.tsx
+│   │   └── RegisterPage.tsx
 │   ├── dashboard/
-│   │   └── DashboardPage.tsx        # Overview dashboard & quick actions
+│   │   └── DashboardPage.tsx
 │   ├── documents/
-│   │   ├── DocumentDetailsPage.tsx  # Document detail view, OCR fields & RAG chat
-│   │   └── DocumentsPage.tsx        # Document library list & management
-│   └── NotFoundPage.tsx             # 404 handler page
+│   │   ├── DocumentDetailsPage.tsx
+│   │   └── DocumentsPage.tsx
+│   └── NotFoundPage.tsx
 ├── services/
-│   ├── api.ts                       # Core native fetch API client & 401 handler
-│   ├── auth-service.ts              # Authentication API functions
-│   ├── chat-service.ts              # RAG Q&A ask API functions
-│   └── document-service.ts          # Document upload, storage, list & info functions
+│   ├── api.ts
+│   ├── auth-service.ts
+│   ├── chat-service.ts
+│   └── document-service.ts
 ├── types/
-│   ├── api.ts                       # Generic API error & response types
-│   ├── auth.ts                      # User, Login, Register, AuthState types
-│   ├── chat.ts                      # RAG Q&A, Sources & ChatMessage types
-│   └── document.ts                  # DocumentItem, DocumentInfo & Upload types
-├── App.tsx                          # App routing & provider wrapping
-├── main.tsx                         # DOM mounting point
-└── index.css                        # Tailwind CSS imports & base styles
+│   ├── api.ts
+│   ├── auth.ts
+│   ├── chat.ts
+│   └── document.ts
+├── App.tsx
+├── main.tsx
+└── index.css
 ```
 
----
+## 🏗️ Architecture
 
-## ⚙️ Environment Setup
+The frontend communicates with the FastAPI backend using REST APIs.
 
-1. Copy `.env.example` to create a local `.env` file:
-   ```bash
-   cp .env.example .env
-   ```
-2. Configure your FastAPI backend base URL in `.env`:
-   ```env
-   VITE_API_BASE_URL=http://localhost:8000
-   ```
-
-> **Security Note**: Never expose Supabase service keys, database passwords, or JWT secrets in frontend environment variables.
-
----
-
-## 🚀 Running Locally
-
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-2. **Start Development Server**:
-   ```bash
-   npm run dev
-   ```
-   Open your browser at `http://localhost:5173`.
-
-3. **Run Code Quality Linter**:
-   ```bash
-   npm run lint
-   ```
-
-4. **Verify TypeScript Type Checks**:
-   ```bash
-   npx tsc --noEmit
-   ```
-
-5. **Build Production Bundle**:
-   ```bash
-   npm run build
-   ```
-
-6. **Preview Production Build**:
-   ```bash
-   npm run preview
-   ```
-
----
-
-## 🏗️ Architecture Explanation
-
-```
-┌─────────────────┐       Native fetch       ┌──────────────────────┐
-│  React 19 UI    │ ───────────────────────> │  FastAPI Backend     │
-│ (TypeScript/Vite)│                         │ (http://localhost:8000)│
-└────────┬────────┘                          └──────────┬───────────┘
-         │                                              │
-         │ Direct HTTP PUT                             │ Storage Signed URLs
-         ▼                                              ▼
-┌─────────────────┐                          ┌──────────────────────┐
-│ Supabase Storage│                          │ PostgreSQL / Vector  │
-│ (Private Bucket)│                          │ (pgvector & RAG)     │
-└─────────────────┘                          └──────────────────────┘
+```text
+┌──────────────────────────────┐
+│ React + TypeScript Frontend  │
+│ Deployed on Vercel           │
+└──────────────┬───────────────┘
+               │ REST API
+               ▼
+┌──────────────────────────────┐
+│ FastAPI Backend              │
+│ Deployed on Render           │
+└──────────────┬───────────────┘
+               │
+       ┌───────┼────────┬────────────────┐
+       ▼       ▼        ▼                ▼
+  Supabase  PostgreSQL  Gemini          Groq
+  Storage   + pgvector  LLM             Fallback
 ```
 
----
+### Document Upload Flow
 
-## 🔐 Token Persistence Strategy & Security Tradeoffs
+1. The user selects a driving licence document.
+2. The frontend requests a signed upload URL from the backend.
+3. The backend generates a temporary Supabase Storage upload URL.
+4. The frontend uploads the file directly to Supabase Storage.
+5. The frontend confirms the upload with the backend.
+6. The backend starts the document processing pipeline.
+7. The frontend polls the document status.
+8. The extracted information is displayed to the user.
 
-- **Storage Method**: JWT access tokens are persisted in browser `localStorage` under key `auth_token`.
-- **Session Recovery**: On mount or browser refresh, `AuthProvider` reads the token and calls `GET /api/v1/auth/me` to validate credentials and restore user profile state.
-- **Security Tradeoff**: 
-  - *Advantage*: Enables clean, self-contained REST API interactions without requiring cross-domain server cookie configuration.
-  - *Tradeoff*: `localStorage` can be read by JavaScript on the same origin. In high-security production environments, storing JWTs in `HttpOnly`, `Secure`, `SameSite` cookies is recommended to prevent potential XSS extraction.
+### AI Question-Answering Flow
 
----
+1. The user submits a question about a document.
+2. The frontend sends the question to the backend.
+3. The backend generates an embedding for the question.
+4. Relevant document chunks are retrieved using pgvector similarity search.
+5. The backend sends the retrieved context to the LLM.
+6. Gemini generates the answer when available.
+7. Groq is used as the fallback LLM when Gemini is unavailable.
+8. The frontend displays the answer and source information.
+
+## 🤖 AI/LLM Approach
+
+The application uses a combination of OCR, LLM-based extraction, embeddings, and RAG.
+
+### Document Extraction
+
+- Tesseract is used for OCR-based text extraction.
+- Gemini is used for structured driving licence information extraction.
+- Groq is configured as a fallback provider for LLM-based extraction.
+- The extracted response is validated using the backend's structured data models.
+
+### Embeddings
+
+- Gemini embedding model is used to generate vector embeddings.
+- Document text is divided into chunks.
+- Embeddings are stored in PostgreSQL using pgvector.
+- Query embeddings are compared against stored document embeddings to retrieve relevant information.
+
+### Retrieval-Augmented Generation
+
+The RAG pipeline retrieves relevant document chunks before generating an answer. This helps the LLM answer questions using information associated with the selected document rather than relying only on general model knowledge.
+
+### LLM Fallback
+
+The application uses:
+
+- **Primary LLM:** Google Gemini
+- **Fallback LLM:** Groq using `openai/gpt-oss-120b`
+- **Embedding provider:** Google Gemini
+
+The embedding provider is separate from the LLM fallback mechanism because the application uses Gemini embeddings with a 1536-dimensional vector database configuration.
+
+## 🔐 Authentication and Security
+
+- JWT-based authentication is used for API requests.
+- The frontend attaches the access token to authenticated API requests.
+- Protected routes are used for authenticated application pages.
+- Supabase Storage is configured as a private bucket.
+- Temporary signed URLs are used for file uploads and downloads.
+- Backend secrets are not stored in frontend environment variables.
+
+### Token Storage
+
+The frontend currently stores the JWT access token in browser `localStorage`.
+
+This provides session persistence across browser refreshes but requires protection against cross-site scripting vulnerabilities. A production system with stricter security requirements could use secure, HTTP-only cookies with appropriate CSRF protection.
+
+## ⚙️ Local Setup
+
+### Prerequisites
+
+- Node.js
+- npm
+- Running instance of the FastAPI backend
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/dsakthimukesh/driving-licence-ai-frontend.git
+cd driving-licence-ai-frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+### Environment Variables
+
+Create a `.env` file based on `.env.example`.
+
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+For the deployed application, configure the Vercel environment variable:
+
+```env
+VITE_API_BASE_URL=https://driving-licence-ai-backend.onrender.com
+```
+
+Do not add backend secrets, Supabase service keys, database passwords, or JWT signing keys to frontend environment variables.
+
+### Run the Development Server
+
+```bash
+npm run dev
+```
+
+Open the application at:
+
+```text
+http://localhost:5173
+```
+
+### Build the Application
+
+```bash
+npm run build
+```
+
+### Preview the Production Build
+
+```bash
+npm run preview
+```
+
+### TypeScript Validation
+
+```bash
+npx tsc --noEmit
+```
+
+## ☁️ Deployment
+
+### Frontend
+
+The frontend is deployed using Vercel.
+
+Deployment configuration:
+
+- Framework: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+- Environment variable: `VITE_API_BASE_URL`
+
+A `vercel.json` file is included to support client-side routing in the single-page application.
+
+### Backend
+
+The backend is deployed separately on Render.
+
+The frontend communicates with the deployed backend using the configured `VITE_API_BASE_URL` environment variable.
+
+## 🔑 Key Technical Decisions
+
+### Direct File Upload Using Signed URLs
+
+Files are uploaded directly from the frontend to Supabase Storage using temporary signed URLs. This avoids sending the complete file through the backend and prevents exposing Supabase service credentials to the browser.
+
+### Native Fetch API
+
+The application uses a lightweight API wrapper based on the browser's native `fetch` API. This avoids introducing an additional HTTP client dependency.
+
+### React Context for Authentication
+
+Authentication state is managed using React Context and React Hooks. This keeps the authentication state accessible across the application without requiring a separate state management library.
+
+### Separate Frontend and Backend Deployments
+
+The frontend and backend are deployed independently. This allows each service to be developed, deployed, and scaled separately.
+
+### LLM Fallback Strategy
+
+Gemini is used as the primary LLM provider, while Groq provides fallback processing when the primary provider encounters availability or quota-related errors.
 
 ## ⚠️ Known Limitations
 
-1. **Read-Only Extracted Information**: Extracted driving licence fields are currently read-only. The backend FastAPI service does not expose a `PUT` or `PATCH` endpoint for updating `document_info` records. Manual editing UI will be enabled when the update API is implemented in future backend versions.
-2. **File Size Limit**: Maximum file upload size is capped at 10 MB per document as required by backend storage schemas.
+- OCR accuracy depends on the quality, orientation, and readability of the uploaded document.
+- Extracted information may require user review and correction.
+- AI-generated information should be verified against the original document.
+- LLM providers may have usage limits, quotas, or temporary availability issues.
+- The application currently focuses on driving licence document processing.
+- The frontend depends on the availability and configuration of the deployed backend.
+- JWT tokens are stored in browser `localStorage`, which has security tradeoffs compared with HTTP-only cookies.
+- The application is an assessment project and has not been evaluated through a formal security audit or large-scale load test.
+
+## 🧰 AI Development Tools Used
+
+- **Antigravity:** Used as an AI-assisted development tool for implementing, reviewing, and improving application functionality.
+- **LLM APIs:** Google Gemini and Groq were integrated for document extraction and question answering.
+- **AI-assisted debugging:** Used during development to investigate integration issues, improve error handling, and validate implementation decisions.
+
+AI-assisted development was combined with manual testing, API verification, deployment checks, and end-to-end application testing.
+
+## 🧪 Testing
+
+The application was tested through the complete user flow:
+
+1. User registration
+2. User login
+3. Document upload
+4. Document processing
+5. Extracted information display
+6. Extracted information editing
+7. Document Q&A using RAG
+8. Frontend and backend deployment verification
+
+The frontend production build was also verified using the Vite build process.
+
+## 📌 Future Improvements
+
+- Add more document types and regional licence formats.
+- Improve OCR accuracy and document preprocessing.
+- Add stronger validation and confidence scores for extracted fields.
+- Introduce more comprehensive automated frontend tests.
+- Improve authentication security using HTTP-only cookies.
+- Add monitoring and analytics for production usage.
+- Add support for more LLM providers and configurable model routing.
+
+## 👨‍💻 Author
+
+**Sakthi**
+
+GitHub: https://github.com/dsakthimukesh
