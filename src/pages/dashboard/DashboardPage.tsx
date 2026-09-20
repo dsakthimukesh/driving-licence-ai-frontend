@@ -53,6 +53,7 @@ export const DashboardPage: React.FC = () => {
           </h1>
           <p className="text-blue-100/90 text-sm leading-relaxed">
             Upload driving licences and process documents with advanced OCR, structured key information extraction, and intelligent RAG question-answering.
+          </p>
         </div>
       </div>
 
